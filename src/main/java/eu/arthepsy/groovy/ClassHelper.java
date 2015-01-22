@@ -32,7 +32,7 @@ public class ClassHelper {
 
     private static String expandPath(String filePath) {
         File file = new File(filePath.replaceFirst("^~", System.getProperty("user.home")));
-	return (file.isAbsolute() ? file.getAbsolutePath() : file.getPath());
+        return (file.isAbsolute() ? file.getAbsolutePath() : file.getPath());
     }
     public static String getClassPathFromFilePath(String filePath) {
         return getClassPathFromFilePath(filePath, null);
@@ -53,7 +53,7 @@ public class ClassHelper {
         }
         classPath = classPath.replace('/', '.');
         classPath = classPath.replaceAll("^\\.+", "");
-	return classPath;
+        return classPath;
     }
 
     public static String getClassPathForClass(String classPath) {
