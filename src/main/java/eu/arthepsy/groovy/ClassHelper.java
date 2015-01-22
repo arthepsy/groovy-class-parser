@@ -31,7 +31,8 @@ public class ClassHelper {
     private static Set<String> removableClassPathTails = getRemovableClassPathTails();
 
     private static String expandPath(String filePath) {
-        return new File(filePath.replaceFirst("^~", System.getProperty("user.home"))).getAbsolutePath();
+        File file = new File(filePath.replaceFirst("^~", System.getProperty("user.home")));
+	return (file.isAbsolute() ? file.getAbsolutePath() : file.getPath());
     }
     public static String getClassPathFromFilePath(String filePath) {
         return getClassPathFromFilePath(filePath, null);
@@ -51,7 +52,8 @@ public class ClassHelper {
             classPath = classPath.substring(0, pos);
         }
         classPath = classPath.replace('/', '.');
-        return classPath;
+        classPath = classPath.replaceAll("^\\.+", "");
+	return classPath;
     }
 
     public static String getClassPathForClass(String classPath) {
