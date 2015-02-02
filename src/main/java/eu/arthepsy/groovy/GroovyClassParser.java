@@ -72,7 +72,7 @@ public class GroovyClassParser {
         } catch (RecognitionException e) {
             String msg = "ignored due to RecognitionException: " + fileName + " [" + e.getMessage() + "]";
             log.error(msg);
-            log.debug(msg, e);            e.printStackTrace();
+            log.debug(msg, e);
         } catch (TokenStreamException e) {
             String msg = "ignored due to TokenStreamException: " + fileName + " [" + e.getMessage() + "]";
             log.error(msg);
