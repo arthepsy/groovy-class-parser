@@ -23,34 +23,60 @@
  */
 package eu.arthepsy.groovy;
 
-import org.junit.Test;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.File;
+import java.util.Set;
+
+import org.codehaus.groovy.tools.shell.IO;
+import org.codehaus.groovy.tools.shell.util.Logger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Set;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class GroovyClassParserTest {
 
+    private ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    private ByteArrayOutputStream errStream = new ByteArrayOutputStream();
+
+    private GroovyClassParser parseFile(String fileClassName) throws IOException {
+        File file = ResourceUtils.getFile(fileClassName + ".groovy");
+        assertNotNull(file);
+        GroovyClassParser parser = new GroovyClassParser();
+        parser.parseGroovyFile(file.getPath());
+        return parser;
+    }
 
     private Set<String> getClassPaths(String fileClassName) throws IOException {
         return getClassPaths(fileClassName, null);
     }
 
     private Set<String> getClassPaths(String fileClassName, String packagePath) throws IOException {
-        File file = ResourceUtils.getFile(fileClassName + ".groovy");
-        assertNotNull(file);
-        GroovyClassParser parser = new GroovyClassParser();
-        parser.parseGroovyFile(file.getPath());
+        GroovyClassParser parser = parseFile(fileClassName);
         Set<String> classPaths = parser.getClassPaths();
         if (packagePath != null && ! packagePath.isEmpty()) {
-            assertEquals(classPaths.contains(packagePath + '.' + fileClassName), true);
+            assertTrue(classPaths.contains(packagePath + '.' + fileClassName));
         } else {
-            assertEquals(classPaths.contains(fileClassName), true);
+            assertTrue(classPaths.contains(fileClassName));
         }
         return classPaths;
+    }
+
+    @Before
+    public void initStreams() throws IllegalAccessException {
+        Logger.io = new IO(System.in, outStream, errStream);
+    }
+
+    @After
+    public void resetStreams() {
+        outStream.reset();
+        errStream.reset();
     }
 
     @Test
@@ -61,8 +87,16 @@ public class GroovyClassParserTest {
     }
 
     @Test
-    public void WithoutClassWithPackageTest() throws IOException {
-        String fileClassName = "WithoutClassWithPackage";
+    public void WithoutClassWithSimplePackageTest() throws IOException {
+        String fileClassName = "WithoutClassWithSimplePackage";
+        String packagePath = "groovy";
+        Set<String> classPaths = getClassPaths(fileClassName, packagePath);
+        assertEquals(1, classPaths.size());
+    }
+
+    @Test
+    public void WithoutClassWithNestedPackageTest() throws IOException {
+        String fileClassName = "WithoutClassWithNestedPackage";
         String packagePath = "eu.arthepsy.groovy";
         Set<String> classPaths = getClassPaths(fileClassName, packagePath);
         assertEquals(1, classPaths.size());
@@ -80,7 +114,7 @@ public class GroovyClassParserTest {
         String fileClassName = "SingleClassAndDifferentFilename";
         Set<String> classPaths = getClassPaths(fileClassName);
         assertEquals(2, classPaths.size());
-        assertEquals(classPaths.contains(fileClassName), true);
+        assertTrue(classPaths.contains(fileClassName));
     }
 
     @Test
@@ -89,7 +123,7 @@ public class GroovyClassParserTest {
         String packagePath = "eu.arthepsy.groovy";
         Set<String> classPaths = getClassPaths(fileClassName, packagePath);
         assertEquals(1, classPaths.size());
-        assertEquals(classPaths.contains(packagePath + '.' + fileClassName), true);
+        assertTrue(classPaths.contains(packagePath + '.' + fileClassName));
     }
 
     @Test
@@ -97,9 +131,9 @@ public class GroovyClassParserTest {
         String fileClassName = "SingleNestedClass";
         Set<String> classPaths = getClassPaths(fileClassName);
         assertEquals(4, classPaths.size());
-        assertEquals(classPaths.contains("Single"), true);
-        assertEquals(classPaths.contains("Single$Nested"), true);
-        assertEquals(classPaths.contains("Single$Nested$Clazz"), true);
+        assertTrue(classPaths.contains("Single"));
+        assertTrue(classPaths.contains("Single$Nested"));
+        assertTrue(classPaths.contains("Single$Nested$Clazz"));
     }
 
     @Test
@@ -107,8 +141,24 @@ public class GroovyClassParserTest {
         String fileClassName = "SiblingClasses";
         Set<String> classPaths = getClassPaths(fileClassName);
         assertEquals(3, classPaths.size());
-        assertEquals(classPaths.contains("Sibling1"), true);
-        assertEquals(classPaths.contains("Sibling2"), true);
+        assertTrue(classPaths.contains("Sibling1"));
+        assertTrue(classPaths.contains("Sibling2"));
+    }
+
+    @Test
+    public void RecognitionExceptionTest() throws IOException {
+        String fileClassName = "RecognitionException";
+        parseFile(fileClassName);
+        String out = outStream.toString();
+        assertTrue(out.contains(" ignored due to RecognitionException: "));
+    }
+
+    @Test
+    public void TokenStreamExceptionTest() throws IOException {
+        String fileClassName = "TokenStreamException";
+        parseFile(fileClassName);
+        String out = outStream.toString();
+        assertTrue(out.contains(" ignored due to TokenStreamException: "));
     }
 
 }
