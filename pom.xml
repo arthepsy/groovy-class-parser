@@ -6,7 +6,7 @@
 
     <groupId>eu.arthepsy.groovy</groupId>
     <artifactId>groovy-class-parser</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <properties>
         <dev.nick>arthepsy</dev.nick>
