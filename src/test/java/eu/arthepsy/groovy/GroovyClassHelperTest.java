@@ -26,7 +26,7 @@ package eu.arthepsy.groovy;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-public class ClassHelperTest {
+public class GroovyClassHelperTest {
 	
 	private final String testFilePath = "eu/arthepsy/groovy/ClassPath.class";
 	private final String testClassPath = "eu.arthepsy.groovy.ClassPath";
@@ -36,7 +36,7 @@ public class ClassHelperTest {
 	}
 
 	private String getClassPath(String filePath, String baseDir) {
-		return ClassHelper.getClassPathFromFilePath(filePath, baseDir);
+		return GroovyClassHelper.getClassPathFromFilePath(filePath, baseDir);
 	}
 
 	@Test

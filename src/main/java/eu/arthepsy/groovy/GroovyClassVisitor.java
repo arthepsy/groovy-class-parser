@@ -29,7 +29,7 @@ import org.codehaus.groovy.antlr.treewalker.VisitorAdapter;
 
 import java.util.*;
 
-class ClassVisitor extends VisitorAdapter {
+class GroovyClassVisitor extends VisitorAdapter {
     private final Set<String> classPaths;
     private String packagePathWithSlashes;
     private String packagePathWithDots;
@@ -37,7 +37,7 @@ class ClassVisitor extends VisitorAdapter {
     private final Map<String, String> classCache;
     private final Stack<GroovySourceAST> stack;
 
-    public ClassVisitor() {
+    public GroovyClassVisitor() {
         packagePathWithSlashes = null;
         packagePathWithDots = null;
         classPaths = new HashSet<String>();

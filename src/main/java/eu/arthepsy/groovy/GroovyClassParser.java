@@ -38,11 +38,11 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ClassParser {
-    private final Logger log = Logger.create(ClassParser.class);
+public class GroovyClassParser {
+    private final Logger log = Logger.create(GroovyClassParser.class);
     private final Set<String> classPaths;
 
-    public ClassParser() {
+    public GroovyClassParser() {
         classPaths = new HashSet<String>();
     }
 
@@ -54,7 +54,7 @@ public class ClassParser {
         String fileName = new File(filePath).getName();
         try {
             String source = readFileAsString(filePath);
-            ClassVisitor visitor = new ClassVisitor();
+            GroovyClassVisitor visitor = new GroovyClassVisitor();
             this.parseGroovySource(source, visitor);
 
             for (String classPath : visitor.getClassPaths()) {

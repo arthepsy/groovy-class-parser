@@ -27,7 +27,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ClassHelper {
+public class GroovyClassHelper {
     private static Set<String> removableClassPathTails = getRemovableClassPathTails();
 
     private static String expandPath(String filePath) {
