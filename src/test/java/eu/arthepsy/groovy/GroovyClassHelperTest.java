@@ -32,7 +32,7 @@ public class GroovyClassHelperTest {
 	private final String testClassPath = "eu.arthepsy.groovy.ClassPath";
 
 	private String getClassPath(String filePath) {
-		return getClassPath(filePath, null);
+		return GroovyClassHelper.getClassPathFromFilePath(filePath);
 	}
 
 	private String getClassPath(String filePath, String baseDir) {
@@ -63,6 +63,47 @@ public class GroovyClassHelperTest {
 		String baseDir = "/sources/project";
 		String filePath = baseDir + "/" + testFilePath;
 		assertEquals(testClassPath, getClassPath(filePath, baseDir));
+	}
+
+	@Test
+	public void FilePathWithoutClassExtensionTest() {
+		String filePath = "ClassPath";
+		assertEquals(filePath, getClassPath(filePath));
+	}
+
+	@Test
+	public void RelativeFilePathWithEmptyBaseDirTest() {
+		String baseDir = "";
+		String filePath = testFilePath;
+		assertEquals(testClassPath, getClassPath(filePath, baseDir));
+	}
+
+	@Test
+	public void AbsoluteFilePathWithEmptyBaseDirTest() {
+		String baseDir = "";
+		String filePath = "/" + testFilePath;
+		assertEquals(testClassPath, getClassPath(filePath, baseDir));
+	}
+
+	@Test
+	public void ClassPathWithMethodTest() {
+		String classPath = "eu.arthepsy.groovy.ClassPath$_methodOne";
+		assertEquals(testClassPath, GroovyClassHelper.getClassPathForClass(classPath));
+	}
+
+	@Test
+	public void AnonymousInnerClassPathTest() {
+		String classPath = "eu.arthepsy.groovy.ClassPath$1";
+		assertEquals(testClassPath, GroovyClassHelper.getClassPathForClass(classPath));
+	}
+
+	@Test
+	public void ClassPathWithTraitTest() {
+		String classPath;
+		classPath = "eu.arthepsy.groovy.ClassPath$Trait$Helper";
+		assertEquals(testClassPath, GroovyClassHelper.getClassPathForClass(classPath));
+		classPath = "eu.arthepsy.groovy.ClassPath$Trait$FieldHelper";
+		assertEquals(testClassPath, GroovyClassHelper.getClassPathForClass(classPath));
 	}
 
 }
