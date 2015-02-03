@@ -24,7 +24,14 @@
 package eu.arthepsy.groovy;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import org.junit.Test;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 public class GroovyClassHelperTest {
 	
@@ -37,6 +44,23 @@ public class GroovyClassHelperTest {
 
 	private String getClassPath(String filePath, String baseDir) {
 		return GroovyClassHelper.getClassPathFromFilePath(filePath, baseDir);
+	}
+
+	@Test
+	public void ValidClassDefinitionTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+		Class<?> clazz = GroovyClassHelper.class;
+		assertTrue(Modifier.isFinal(clazz.getModifiers()));
+		final Constructor<?> constructor = clazz.getDeclaredConstructor();
+		assertFalse(constructor.isAccessible());
+		assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+		constructor.setAccessible(true);
+		constructor.newInstance();
+		constructor.setAccessible(false);
+		for (final Method method: clazz.getMethods()) {
+			if (method.getDeclaringClass().equals(clazz)) {
+				assertTrue(Modifier.isStatic(method.getModifiers()));
+			}
+		}
 	}
 
 	@Test

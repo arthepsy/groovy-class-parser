@@ -146,6 +146,39 @@ public class GroovyClassParserTest {
     }
 
     @Test
+    public void SingleInterfaceTest() throws IOException {
+        String fileClassName = "SingleInterface";
+        Set<String> classPaths = getClassPaths(fileClassName);
+        assertEquals(2, classPaths.size());
+        assertTrue(classPaths.contains("SimpleInterface"));
+    }
+
+    @Test
+    public void SingleEnumTest() throws IOException {
+        String fileClassName = "SingleEnum";
+        Set<String> classPaths = getClassPaths(fileClassName);
+        assertEquals(2, classPaths.size());
+        assertTrue(classPaths.contains("SimpleEnum"));
+    }
+
+    @Test
+    public void SingleAnnotationTest() throws IOException {
+        String fileClassName = "SingleAnnotation";
+        Set<String> classPaths = getClassPaths(fileClassName);
+        assertEquals(3, classPaths.size());
+        assertTrue(classPaths.contains("SimpleFeature"));
+        assertTrue(classPaths.contains("SimpleClass"));
+    }
+
+    @Test
+    public void SingleTraitTest() throws IOException {
+        String fileClassName = "SingleTrait";
+        Set<String> classPaths = getClassPaths(fileClassName);
+        assertEquals(2, classPaths.size());
+        assertTrue(classPaths.contains("SimpleTrait"));
+    }
+
+    @Test
     public void RecognitionExceptionTest() throws IOException {
         String fileClassName = "RecognitionException";
         parseFile(fileClassName);
@@ -160,5 +193,6 @@ public class GroovyClassParserTest {
         String out = outStream.toString();
         assertTrue(out.contains(" ignored due to TokenStreamException: "));
     }
+
 
 }

@@ -31,30 +31,20 @@ import java.util.*;
 
 class GroovyClassVisitor extends VisitorAdapter {
     private final Set<String> classPaths;
-    private String packagePathWithSlashes;
-    private String packagePathWithDots;
+    private String packagePath;
 
     private final Map<String, String> classCache;
     private final Stack<GroovySourceAST> stack;
 
     public GroovyClassVisitor() {
-        packagePathWithSlashes = null;
-        packagePathWithDots = null;
+        packagePath = null;
         classPaths = new HashSet<String>();
         classCache = new HashMap<String, String>();
         stack = new Stack<GroovySourceAST>();
     }
 
     public String getPackagePath() {
-        return getPackagePath(false);
-    }
-
-    public String getPackagePath(Boolean withSlashes) {
-        if (withSlashes) {
-            return packagePathWithSlashes;
-        } else {
-            return packagePathWithDots;
-        }
+        return packagePath;
     }
 
     public Set<String> getClassPaths() {
@@ -77,8 +67,7 @@ class GroovyClassVisitor extends VisitorAdapter {
     @Override
     public void visitPackageDef(GroovySourceAST t, int visit) {
         if (visit == OPENING_VISIT) {
-            packagePathWithSlashes = getPackagePath(t);
-            packagePathWithDots = packagePathWithSlashes.replace('/', '.');
+            packagePath = getPackagePath(t);
         }
         super.visitPackageDef(t, visit);
     }
@@ -168,8 +157,8 @@ class GroovyClassVisitor extends VisitorAdapter {
     }
 
     private String getPackagePrefix() {
-        if (packagePathWithDots != null && !packagePathWithDots.isEmpty()) {
-            return packagePathWithDots + ".";
+        if (packagePath != null && !packagePath.isEmpty()) {
+            return packagePath + ".";
         } else {
             return "";
         }
@@ -192,7 +181,7 @@ class GroovyClassVisitor extends VisitorAdapter {
             if (t.getType() == GroovyTokenTypes.DOT) {
                 GroovySourceAST first = (GroovySourceAST) t.getFirstChild();
                 GroovySourceAST second = (GroovySourceAST) first.getNextSibling();
-                return (recursePackageAST(first) + "/" + recursePackageAST(second));
+                return (recursePackageAST(first) + "." + recursePackageAST(second));
             }
             if (t.getType() == GroovyTokenTypes.IDENT) {
                 return t.getText();

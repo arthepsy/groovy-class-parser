@@ -30,6 +30,8 @@ import java.util.Set;
 public final class GroovyClassHelper {
     private static Set<String> removableClassPathTails = getRemovableClassPathTails();
 
+    private GroovyClassHelper() {}
+
     private static String expandPath(String filePath) {
         File file = new File(filePath.replaceFirst("^~", System.getProperty("user.home")));
         return (file.isAbsolute() ? file.getAbsolutePath() : file.getPath());
